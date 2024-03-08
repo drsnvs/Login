@@ -11,11 +11,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -35,7 +37,10 @@ public class loginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        boolean c;
+        
+        HttpSession session=request.getSession();
+        session.setAttribute("SessionName", "Darshan");
+        
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             String email = request.getParameter("email_id");
@@ -50,12 +55,16 @@ public class loginServlet extends HttpServlet {
                 Connection conn = DriverManager.getConnection(url, username, "");
                 Statement st = conn.createStatement();
                 // SQL query to insert user data
-                String sql = "SELECT users.email_id,users.password,role_table.role FROM darshan_14.users,darshan_14.role_table where users.role = role_table.role and  users.email_id =' "+email+" 'and users.password='"+password+"' and role_table.role="+role+";";
+//                String sql = "SELECT email_id,password,role_table.role FROM users,role_table where users.role = role_table.role and  users.email_id =\" "+email+" \"and users.password=\""+password+"\" and role_table.role="+role+";";
+                String sql = "SELECT users.email_id,users.password,role_table.role FROM darshan_14.users,darshan_14.role_table where users.role = role_table.role and  users.email_id = \""+email+"\" and users.password=\""+password+"\" and role_table.role="+role+";";
                 ResultSet rs = st.executeQuery(sql);
                 rs.last();
-                int rowCount = rs.getFetchSize();
+                int rowCount = rs.getRow();
                 
-                out.println("<html><body><h1 align=center>Registration Details of "+role+"</h1><table border=1 align=center style=\"border:2px solid black;height:50%;width:50%;font-size: 20px;text-align: center;\"><tr><td>Role</td><td>"+role+"</td></tr><tr><td>Email</td><td>"+email+"</td></tr>");
+                String role_table = "SELECT * from role_table";
+                ResultSet role_table_rs = st.executeQuery(role_table);
+                role_table_rs.last();
+                out.println("<html><body><h1 align=center>Welcome to Login page of "+role_table_rs.getString("role_name")+"</h1><table border=1 align=center style=\"border:2px solid black;height:50%;width:50%;font-size: 20px;text-align: center;\"><tr><td>Role</td><td>"+role_table_rs.getString("role_name")+"</td></tr><tr><td>Email</td><td>"+email+"</td></tr>");
                 
 //                    try (Statement st = conn.createStatement()) {
 //                        ResultSet rs = st.executeQuery(sql);
@@ -73,11 +82,18 @@ public class loginServlet extends HttpServlet {
 //                    }
 //                boolean rs = st.execute(sql);
                 if (rowCount>=1) {
-                    out.println("<tr><td>Status</td><td>Successfull!</td><tr>");
-                    out.println("<tr><td>Status</td><td>"+rowCount+"</td><tr>");
+//                    if(role_table_rs.getInt("role") == 1){
+//                        response.sendRedirect("Pages.java");
+//                    }
+//                    response.sendRedirect("Pages.jsp");
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/Pages.jsp");
+                    dispatcher.forward(request, response);
+                    out.println("<tr><td>Login</td><td>Successfull!</td><tr>");
+                    
+//                    out.println("<tr><td>Status</td><td>"+rowCount+"</td><tr>");
                 } else {
-                    out.println("<tr><td>Status</td><td>Failed!</td><tr>");
-                    out.println("<tr><td>Status</td><td>"+rowCount+"</td><tr>");
+                    out.println("<tr><td>Login</td><td>Failed!</td><tr>");
+//                    out.println("<tr><td>Status</td><td>"+rowCount+"</td><tr>");
                 }
                 out.println("</table></body></html>");
                 conn.close();
