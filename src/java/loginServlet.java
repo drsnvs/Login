@@ -38,14 +38,16 @@ public class loginServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        HttpSession session=request.getSession();
-        session.setAttribute("SessionName", "Darshan");
+        
         
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             String email = request.getParameter("email_id");
             String password = request.getParameter("password");
             int role = Integer.parseInt(request.getParameter("role"));
+            
+            HttpSession session=request.getSession();
+            session.setAttribute("eamil_session", email);
             
             ServletContext sc = getServletContext();
             String url = sc.getInitParameter("url");
@@ -64,8 +66,9 @@ public class loginServlet extends HttpServlet {
                 String role_table = "SELECT * from role_table";
                 ResultSet role_table_rs = st.executeQuery(role_table);
                 role_table_rs.last();
-                out.println("<html><body><h1 align=center>Welcome to Login page of "+role_table_rs.getString("role_name")+"</h1><table border=1 align=center style=\"border:2px solid black;height:50%;width:50%;font-size: 20px;text-align: center;\"><tr><td>Role</td><td>"+role_table_rs.getString("role_name")+"</td></tr><tr><td>Email</td><td>"+email+"</td></tr>");
-                
+                out.println("<html><body>");
+                out.println("<h1 align=center>Login page Failed</h1><table border=1 align=center style=\"border:2px solid black;height:50%;width:50%;font-size: 20px;text-align: center;\"><tr><td>Email</td><td>"+email+"</td></tr>");
+                session.setAttribute("role_name_session", role);
 //                    try (Statement st = conn.createStatement()) {
 //                        ResultSet rs = st.executeQuery(sql);
 //                        while (rs.next()) {
@@ -85,9 +88,9 @@ public class loginServlet extends HttpServlet {
 //                    if(role_table_rs.getInt("role") == 1){
 //                        response.sendRedirect("Pages.java");
 //                    }
-//                    response.sendRedirect("Pages.jsp");
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("/Pages.jsp");
-                    dispatcher.forward(request, response);
+                    response.sendRedirect("Pages.jsp");
+//                    RequestDispatcher dispatcher = request.getRequestDispatcher("/Pages.jsp");
+//                    dispatcher.forward(request, response);
                     out.println("<tr><td>Login</td><td>Successfull!</td><tr>");
                     
 //                    out.println("<tr><td>Status</td><td>"+rowCount+"</td><tr>");

@@ -16,13 +16,22 @@
     <body>
         
         <%
-            out.println("<html><body><h1 align=center>Welcome to Login page of "+" d "+"</h1><table border=1 align=center style=\"border:2px solid black;height:50%;width:50%;font-size: 20px;text-align: center;\"><tr><td>Role</td><td>"+" a "+"</td></tr><tr><td>Email</td><td>"+" r "+"</td></tr>");
+            int roleName = (Integer) session.getAttribute("role_name_session");
+            String role_s = null;
+            if(roleName == 1){
+                role_s = "Admin";
+            }
+            if(roleName == 2){
+                role_s = "User";
+            }
+            if(roleName == 3){
+                role_s = "Guest";
+            }
+            out.println("<html><body>");
+            out.println("<h1 align=center>Welcome to Login page of "+role_s+"</h1><table border=1 align=center style=\"border:2px solid black;height:50%;width:50%;font-size: 20px;text-align: center;\"><tr><td>Role</td><td>"+role_s+"</td></tr><tr><td>Email</td><td>"+session.getAttribute("eamil_session")+"</td></tr>");
 //            out.println(session.getAttribute("SessionName"));
-            String value = (String) session.getAttribute("SessionName");
-        
-            // Use the value as needed
-            out.println("Value from FirstPage: " + value);
+            
         %>
-        <h1><%= session.getAttribute("SessionName") %></h1>
+<!--        <h1><%= session.getAttribute("role_name_session") %></h1>-->
     </body>
 </html>
