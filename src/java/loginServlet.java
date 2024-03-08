@@ -8,11 +8,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -50,35 +48,37 @@ public class loginServlet extends HttpServlet {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection conn = DriverManager.getConnection(url, username, "");
-//                Statement st = conn.createStatement();
+                Statement st = conn.createStatement();
                 // SQL query to insert user data
                 String sql = "SELECT users.email_id,users.password,role_table.role FROM darshan_14.users,darshan_14.role_table where users.role = role_table.role and  users.email_id =' "+email+" 'and users.password='"+password+"' and role_table.role="+role+";";
-//                ResultSet rs = st.executeQuery(sql);
-                
+                ResultSet rs = st.executeQuery(sql);
+                rs.last();
+                int rowCount = rs.getFetchSize();
                 
                 out.println("<html><body><h1 align=center>Registration Details of "+role+"</h1><table border=1 align=center style=\"border:2px solid black;height:50%;width:50%;font-size: 20px;text-align: center;\"><tr><td>Role</td><td>"+role+"</td></tr><tr><td>Email</td><td>"+email+"</td></tr>");
                 
-                    try (Statement st = conn.createStatement()) {
-                        ResultSet rs = st.executeQuery(sql);
-                        while (rs.next()) {
-//                          String coffeeName = rs.getString("COF_NAME");
-//                          int supplierID = rs.getInt("SUP_ID");
-//                          float price = rs.getFloat("PRICE");
-//                          int sales = rs.getInt("SALES");
-//                          int total = rs.getInt("TOTAL");
-                          out.print("<tr><td>Role</td><td>"+rs.getString("email_id")+"</td></tr>");
-                        }
-                    
-                    }catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                    try (Statement st = conn.createStatement()) {
+//                        ResultSet rs = st.executeQuery(sql);
+//                        while (rs.next()) {
+////                          String coffeeName = rs.getString("COF_NAME");
+////                          int supplierID = rs.getInt("SUP_ID");
+////                          float price = rs.getFloat("PRICE");
+////                          int sales = rs.getInt("SALES");
+////                          int total = rs.getInt("TOTAL");
+//                          out.print("<tr><td>Role</td><td>"+rs.getString("email_id")+"</td></tr>");
+//                        }
+//                    
+//                    }catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
 //                boolean rs = st.execute(sql);
-//                if (rs) {
-//                    out.println("<tr><td>Status</td><td>Successfull!</td><tr>");
-//                    out.println("<tr><td>Status</td><td>"+rs+"</td><tr>");
-//                } else {
-//                    out.println("<tr><td>Status</td><td>Failed!</td><tr>");
-//                }
+                if (rowCount>=1) {
+                    out.println("<tr><td>Status</td><td>Successfull!</td><tr>");
+                    out.println("<tr><td>Status</td><td>"+rowCount+"</td><tr>");
+                } else {
+                    out.println("<tr><td>Status</td><td>Failed!</td><tr>");
+                    out.println("<tr><td>Status</td><td>"+rowCount+"</td><tr>");
+                }
                 out.println("</table></body></html>");
                 conn.close();
             } catch (SQLException e) {
