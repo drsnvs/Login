@@ -1,0 +1,70 @@
+--
+-- Table structure for table `role_table`
+--
+
+CREATE TABLE `role_table` (
+  `role` int(11) NOT NULL,
+  `role_name` varchar(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `role_table`
+--
+
+INSERT INTO `role_table` (`role`, `role_name`) VALUES
+(1, 'Admin'),
+(2, 'User'),
+(3, 'Guest');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `first_name` varchar(20) NOT NULL,
+  `last_name` varchar(20) NOT NULL,
+  `password` varchar(20) NOT NULL,
+  `email_id` varchar(45) NOT NULL,
+  `mobile_no` varchar(10) NOT NULL,
+  `address` varchar(95) NOT NULL,
+  `role` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`first_name`, `last_name`, `password`, `email_id`, `mobile_no`, `address`, `role`) VALUES
+('Darshan', 'Sarvaiya', '123456', 'd@gmail.com', '7894561230', 'Nikol', 1),
+('Darshan', 'Sarvaiya', '123456', 'da@gmail.com', '7894561230', 'Odhav', 2),
+('Darshan', 'Sarvaiya', '123456', 'daa@gmail.com', '7894561230', 'add', 3),
+('Darshan', 'Sarvaiya', '123456', 'daaa@gmail.com', '7894561230', 'address', 1),
+('Darshan', 'Sarvaiya', '777777', 'daaaa@gmail.com', '7894561230', 'address', 1);
+
+--
+-- Indexes for dumped tables
+--
+
+
+-- Indexes for table `role_table`
+--
+ALTER TABLE `role_table`
+  ADD PRIMARY KEY (`role`);
+
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD UNIQUE KEY `email_id` (`email_id`),
+  ADD KEY `role` (`role`);
+
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `role` FOREIGN KEY (`role`) REFERENCES `role_table` (`role`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+--
